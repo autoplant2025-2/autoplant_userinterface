@@ -1,0 +1,181 @@
+import { Button, VerticalBox, TabWidget, ScrollView, HorizontalBox } from "std-widgets.slint";
+import "./ark-pixel-10px-monospaced-ko.otf";
+import "./dalmoori.ttf";
+
+component KnobCapture inherits FocusScope {
+    in-out property <string> text: "";
+    hbox := HorizontalBox {
+        Text {
+            text: root.has-focus ? ">" : " ";
+        }
+        rect := Rectangle {
+            text := Text {
+                text: root.text;
+                color: root.has-focus ? Blinker.white(root.accessible-expanded) : black;
+                letter-spacing: 0;
+                horizontal-alignment: TextHorizontalAlignment.center;
+                vertical-alignment: TextVerticalAlignment.center;
+            }
+            background: root.has-focus ? Blinker.ntransparent(root.accessible-expanded) : transparent;
+        }
+        Text {
+            text: root.has-focus ? "<" : " ";
+        }
+    }
+    key-pressed(event) => {
+        if (event.text == Key.Return) {
+            self.accessible-expanded = !self.accessible-expanded;
+            self.accessible-action-default();
+            return EventResult.accept;
+        }
+        if (!self.accessible-expanded) {
+            return EventResult.reject;
+        }
+        if (event.text == Key.Tab || event.text == Key.RightArrow) {
+            self.accessible-action-increment();
+            return EventResult.accept;
+        }
+        if (event.text == Key.Backtab || event.text == Key.LeftArrow) {
+            self.accessible-action-decrement();
+            return EventResult.accept;
+        }
+        return EventResult.reject;
+    }
+}
+
+export component SpinBox inherits KnobCapture {
+    in-out property <float> value: 0.0;
+    in property <float> step: 1.0;
+    in property <float> min: -9999.0;
+    in property <float> max: 9999.0;
+
+    text: value.to-fixed(4);
+
+    accessible-role: AccessibleRole.spinbox;
+
+    accessible-action-increment => {
+        value = Math.min(value + step, max);
+    }
+
+    accessible-action-decrement => {
+        value = Math.max(value - step, min);
+    }
+}
+
+component SmallTabWidget inherits VerticalLayout {
+    in property <[{name: string, id: int}]> tabs: [
+        {name: "home", id: 0},
+        {name: "menu", id: 1}
+    ];
+    alignment: LayoutAlignment.start;
+    in-out property <int> selected: 0;
+    tab_bar := HorizontalLayout {
+        alignment: LayoutAlignment.start;
+        KnobCapture { // the tab selector
+            text: root.tabs[root.selected].name;
+            accessible-role: AccessibleRole.tab-list;
+            accessible-action-increment => {
+                root.selected = Math.mod(root.selected + 1, root.tabs.length);
+            }
+            accessible-action-decrement => {
+                root.selected = Math.mod(root.selected + root.tabs.length - 1, root.tabs.length);
+            }
+        }
+    }
+
+    Rectangle {
+        VerticalLayout {
+            visible: root.selected == 0;
+            Text {
+                wrap: TextWrap.word-wrap;
+                text: "한글 출력 테스트 ";
+            }
+            ScrollView {
+                VerticalLayout {
+                    SpinBox {
+                        min: -1;
+                        max: 25;
+                        step: 0.1;
+                    }
+                    SpinBox {
+                        min: -1;
+                        max: 25;
+                        step: 0.1;
+                    }
+                    SpinBox {
+                        min: -1;
+                        max: 25;
+                        step: 0.01;
+                    }
+                    SpinBox {
+                        min: -1;
+                        max: 25;
+                        step: 0.001;
+                    }
+                    SpinBox {
+                        min: -1;
+                        max: 25;
+                        step: 0.0001;
+                    }
+                    SpinBox {
+                        min: -1;
+                        max: 25;
+                        step: 0.01;
+                    }
+                    SpinBox {
+                        min: -1;
+                        max: 25;
+                        step: 0.01;
+                    }
+                }
+            }
+        }
+
+        VerticalLayout {
+            visible: root.selected == 1;
+            Text {
+                wrap: TextWrap.word-wrap;
+                text: "menu screen";
+            }
+            SpinBox {
+                min: -1;
+                max: 25;
+                step: 0.01;
+            }
+        }
+
+    }
+}
+
+export component EmbeddedUI inherits Window {
+    width: 128px;
+    height: 64px;
+    default-font-family: "dalmoori";
+    default-font-size: 8px;
+    SmallTabWidget {}
+
+
+    timer := Timer {
+        interval: 0.5s;
+        triggered => {
+            Blinker.high = !Blinker.high;
+        }
+    }
+}
+
+global Blinker {
+    in-out property <bool> high: false;
+    
+    public pure function white(enable: bool) -> color {
+        return enable && high ? Colors.black : Colors.white;
+    }
+    public pure function black(enable: bool) -> color {
+        return enable && high ? Colors.white : Colors.black;
+    }
+    public pure function transparent(enable: bool) -> color {
+        return enable && high ? Colors.black : Colors.transparent;
+    }
+    public pure function ntransparent(enable: bool) -> color {
+        return enable && high ? Colors.transparent : Colors.black;
+    }
+}
