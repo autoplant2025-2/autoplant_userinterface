@@ -5,12 +5,15 @@ import "./dalmoori.ttf";
 component KnobCapture inherits FocusScope {
     in-out property <string> text: "";
     hbox := HorizontalBox {
+        // TODO replace >< with icons, to reduce heap memory usag
         Text {
-            text: root.has-focus ? ">" : " ";
+            text: ">";
+            color: root.has-focus ? Colors.black : Colors.transparent;
+            horizontal-alignment: TextHorizontalAlignment.right;
         }
         rect := Rectangle {
             text := Text {
-                text: root.text;
+                text <=> root.text;
                 color: root.has-focus ? Blinker.white(root.accessible-expanded) : black;
                 letter-spacing: 0;
                 horizontal-alignment: TextHorizontalAlignment.center;
@@ -19,8 +22,13 @@ component KnobCapture inherits FocusScope {
             background: root.has-focus ? Blinker.ntransparent(root.accessible-expanded) : transparent;
         }
         Text {
-            text: root.has-focus ? "<" : " ";
+            text: "<";
+            color: root.has-focus ? Colors.black : Colors.transparent;
+            horizontal-alignment: TextHorizontalAlignment.left;
         }
+        alignment: start;
+        vertical-stretch: 0.0;
+        padding: 0.0;
     }
     key-pressed(event) => {
         if (event.text == Key.Return) {
