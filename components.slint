@@ -69,6 +69,29 @@ export component SpinBox inherits KnobCapture {
 }
 
 
+export component KnobButton inherits FocusScope {
+    in-out property <string> text: "";
+    rect := Rectangle {
+        text := Text {
+            text <=> root.text;
+            color: root.has-focus ? Blinker.white(root.accessible-expanded) : black;
+            letter-spacing: 0;
+            horizontal-alignment: TextHorizontalAlignment.center;
+            vertical-alignment: TextVerticalAlignment.center;
+        }
+        background: root.has-focus ? Blinker.ntransparent(root.accessible-expanded) : transparent;
+    }
+    key-pressed(event) => {
+        if (event.text == Key.Return) {
+            self.accessible-expanded = !self.accessible-expanded;
+            self.accessible-action-default();
+            return EventResult.accept;
+        }
+        return EventResult.reject;
+    }
+}
+
+
 
 export global Blinker {
     in-out property <bool> high: false;
