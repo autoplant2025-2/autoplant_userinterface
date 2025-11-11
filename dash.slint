@@ -19,6 +19,7 @@ export component IconBox {
             }
             
             Text {
+                height: 8px;
                 vertical-alignment: center;
                 text: root.text;
                 overflow: elide; 
@@ -33,6 +34,34 @@ export component FanBox inherits IconBox {
     text: num + "%";
 }
 
+export component LightBox inherits IconBox {
+    icon: @image-url("assets/light.png");
+    in property <int> num: 50;
+    text: num + "%";
+}
+
+export component WaterBox inherits IconBox {
+    icon: @image-url("assets/humidity.png");
+    in property <int> num: 30;
+    text: num + "%";
+}
+export component HumBox inherits IconBox {
+    icon: @image-url("assets/humidity_b.png");
+    in property <int> num: 20;
+    text: num + "%";
+}
+
+export component TempBox inherits IconBox {
+    icon: @image-url("assets/thermometer.png");
+    in property <int> num: 24;
+    text: num + "°C";
+}
+
+export component CoolBox inherits IconBox {
+    icon: @image-url("assets/snow.png");
+    in property <int> num: 5;
+    text: num + "%";
+}
 export component DashBox inherits Rectangle {
     border-width: 1px;
     border-color: black;
@@ -42,30 +71,15 @@ export component DashBox inherits Rectangle {
         padding: 2px;
         Row {
             FanBox {}
-            IconBox {
-                text: "조명";
-                icon: @image-url("assets/light.png");
-            }
+            LightBox {}
         }
         Row {
-            IconBox {
-                text: "급수";
-                icon: @image-url("assets/water.png");
-            }
-            IconBox {
-                text: "습도";
-                icon: @image-url("assets/fan.png");
-            }
+            WaterBox {}
+            HumBox {}
         }
         Row {
-            IconBox {
-                text: "온도";
-                icon: @image-url("assets/humidity.png");
-            }
-            IconBox {
-                text: "영양제";
-                icon: @image-url("assets/nutrition.png");
-            }
+            TempBox {}
+            CoolBox {}
         }
     }
 
