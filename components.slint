@@ -1,0 +1,88 @@
+//import {HorizontalLayout} from "std-widgets.slint";
+
+export component KnobCapture inherits FocusScope {
+    in-out property <string> text: "";
+    hbox := HorizontalLayout {
+        // TODO replace >< with icons, to reduce heap memory usag
+        Text {
+            text: ">";
+            color: root.has-focus ? Colors.black : Colors.transparent;
+            horizontal-alignment: TextHorizontalAlignment.right;
+        }
+        rect := Rectangle {
+            text := Text {
+                text <=> root.text;
+                color: root.has-focus ? Blinker.white(root.accessible-expanded) : black;
+                letter-spacing: 0;
+                horizontal-alignment: TextHorizontalAlignment.center;
+                vertical-alignment: TextVerticalAlignment.center;
+            }
+            background: root.has-focus ? Blinker.ntransparent(root.accessible-expanded) : transparent;
+        }
+        Text {
+            text: "<";
+            color: root.has-focus ? Colors.black : Colors.transparent;
+            horizontal-alignment: TextHorizontalAlignment.left;
+        }
+        alignment: start;
+        vertical-stretch: 0.0;
+        padding: 0.0;
+    }
+    key-pressed(event) => {
+        if (event.text == Key.Return) {
+            self.accessible-expanded = !self.accessible-expanded;
+            self.accessible-action-default();
+            return EventResult.accept;
+        }
+        if (!self.accessible-expanded) {
+            return EventResult.reject;
+        }
+        if (event.text == Key.Tab || event.text == Key.RightArrow) {
+            self.accessible-action-increment();
+            return EventResult.accept;
+        }
+        if (event.text == Key.Backtab || event.text == Key.LeftArrow) {
+            self.accessible-action-decrement();
+            return EventResult.accept;
+        }
+        return EventResult.reject;
+    }
+}
+
+export component SpinBox inherits KnobCapture {
+    in-out property <float> value: 0.0;
+    in property <float> step: 1.0;
+    in property <float> min: -9999.0;
+    in property <float> max: 9999.0;
+
+    text: value.to-fixed(4);
+
+    accessible-role: AccessibleRole.spinbox;
+
+    accessible-action-increment => {
+        value = Math.min(value + step, max);
+    }
+
+    accessible-action-decrement => {
+        value = Math.max(value - step, min);
+    }
+}
+
+
+
+export global Blinker {
+    in-out property <bool> high: false;
+
+    public pure function white(enable: bool) -> color {
+        return enable && high ? Colors.black : Colors.white;
+    }
+    public pure function black(enable: bool) -> color {
+        return enable && high ? Colors.white : Colors.black;
+    }
+    public pure function transparent(enable: bool) -> color {
+        return enable && high ? Colors.black : Colors.transparent;
+    }
+    public pure function ntransparent(enable: bool) -> color {
+        return enable && high ? Colors.transparent : Colors.black;
+    }
+}
