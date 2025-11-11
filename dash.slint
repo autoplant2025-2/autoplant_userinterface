@@ -54,15 +54,19 @@ export component DashBoard {
         VerticalLayout {
             alignment: stretch;
             Text {
+                height: 8px;
                 wrap: TextWrap.word-wrap;
                 text: "<식물이름>";
             }
-            Rectangle {
                 HorizontalLayout {
+                    vertical-stretch: 1.0;
                     DashBox {}
-                    IconBox {}
+                    VerticalLayout {
+                        IconBox {}
+                        IconBox {}
+                    }
+
                 }
-            }
         }
     }
 }
