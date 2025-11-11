@@ -1,5 +1,6 @@
 export component IconBox {
-    in-out property <int> value: 0;
+    in property <string> text: "test";
+    in property <image> icon: @image-url("icons/test.png");
     Rectangle {
         width: 38px;
         height: 12px;
@@ -7,23 +8,45 @@ export component IconBox {
             width: 100%;
             height: 100%;
 
-            spacing: 4px; 
+            spacing: 4px;
             
             alignment: center;
 
             Image {
                 width: 12px;
                 height: 12px;
-                source: @image-url("assets/thermometer.png");
+                source: root.icon;
                 accessible-label: "icon";
             }
             
             Text {
-                text: "test";
+                text: root.text;
                 overflow: elide; 
             }
         }
     }
+}
+
+export component DashBox inherits Rectangle {
+    border-width: 1px;
+    border-color: black;
+    width: 66%;
+    GridLayout {
+        spacing-vertical: 2px;
+        Row {
+            IconBox {}
+            IconBox {}
+        }
+        Row {
+            IconBox {}
+            IconBox {}
+        }
+        Row {
+            IconBox {}
+            IconBox {}
+        }
+    }
+
 }
 
 export component DashBoard {
@@ -33,28 +56,14 @@ export component DashBoard {
             Text {
                 wrap: TextWrap.word-wrap;
                 text: "<식물이름>";
-                height: 8px;
             }
             Rectangle {
-                border-width: 1px;
-                border-color: black;
-                vertical-stretch: 1.0;
-                GridLayout {
-                    spacing-vertical: 2px;
-                    Row {
-                        IconBox {}
-                        IconBox {}
-                    }
-                    Row {
-                        IconBox {}
-                        IconBox {}
-                    }
-                    Row {
-                        IconBox {}
-                        IconBox {}
-                    }
+                HorizontalLayout {
+                    DashBox {}
+                    IconBox {}
                 }
             }
+
         }
     }
 }
