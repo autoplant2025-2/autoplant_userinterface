@@ -30,7 +30,6 @@ export component IconBox {
 export component DashBox inherits Rectangle {
     border-width: 1px;
     border-color: black;
-    width: 66%;
     border-radius: 4px;
     GridLayout {
         spacing-vertical: 2px;
@@ -50,24 +49,20 @@ export component DashBox inherits Rectangle {
 
 }
 
-export component DashBoard {
-    Rectangle {
-        VerticalLayout {
-            alignment: stretch;
-            Text {
-                height: 8px;
-                wrap: TextWrap.word-wrap;
-                text: "<식물이름>";
-            }
-                HorizontalLayout {
-                    vertical-stretch: 1.0;
-                    DashBox {}
-                    VerticalLayout {
-                        IconBox {}
-                        IconBox {}
-                    }
-
-                }
-        }
+export component DashBoard inherits VerticalLayout {
+    alignment: stretch;
+    Text {
+        height: 8px;
+        wrap: TextWrap.word-wrap;
+        text: "<식물이름>";
     }
+        HorizontalLayout {
+            vertical-stretch: 1.0;
+            DashBox {}
+            VerticalLayout {
+                IconBox {}
+                IconBox {}
+            }
+
+        }
 }
