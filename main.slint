@@ -1,7 +1,7 @@
 import { Button, VerticalBox, TabWidget, ScrollView, HorizontalBox } from "std-widgets.slint";
 import "./dalmoori.ttf";
 import {DashBoard} from "dash.slint";
-import {KnobCapture, SpinBox, Blinker} from "components.slint";
+import {KnobCapture, SpinBox, Blinker, Counter} from "components.slint";
 
 component SmallTabWidget inherits VerticalLayout {
     alignment: stretch;
@@ -66,6 +66,12 @@ export component EmbeddedUI inherits Window {
         interval: 0.5s;
         triggered => {
             Blinker.high = !Blinker.high;
+        }
+    }
+    Timer {
+        interval: 0.1s;
+        triggered => {
+            Counter.count = Math.mod((Counter.count + 1), 60);
         }
     }
 }

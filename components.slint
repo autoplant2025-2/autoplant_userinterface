@@ -86,3 +86,7 @@ export global Blinker {
         return enable && high ? Colors.transparent : Colors.black;
     }
 }
+
+export global Counter {
+    in-out property <int> count: 0;
+}
