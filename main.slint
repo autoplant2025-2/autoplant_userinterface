@@ -5,31 +5,34 @@ import {KnobCapture, SpinBox, Blinker} from "components.slint";
 
 component SmallTabWidget inherits VerticalLayout {
     alignment: stretch;
-    spacing: 0px;
+    spacing: 1px;
     in property <[{name: string, id: int}]> tabs: [
         {name: "대시보드", id: 0},
         {name: "menu", id: 1}
     ];
     in-out property <int> selected: 0;
-    tab_bar := HorizontalLayout {
-        height: 9px;
-        alignment: LayoutAlignment.start;
+    VerticalLayout {
         vertical-stretch: 0.0;
-        KnobCapture { // the tab selector
-            text: root.tabs[root.selected].name;
-            accessible-role: AccessibleRole.tab-list;
-            accessible-action-increment => {
-                root.selected = Math.mod(root.selected + 1, root.tabs.length);
-            }
-            accessible-action-decrement => {
-                root.selected = Math.mod(root.selected + root.tabs.length - 1, root.tabs.length);
+        spacing: 0px;
+        tab_bar := HorizontalLayout {
+            height: 8px;
+            alignment: LayoutAlignment.start;
+            vertical-stretch: 0.0;
+            KnobCapture { // the tab selector
+                text: root.tabs[root.selected].name;
+                accessible-role: AccessibleRole.tab-list;
+                accessible-action-increment => {
+                    root.selected = Math.mod(root.selected + 1, root.tabs.length);
+                }
+                accessible-action-decrement => {
+                    root.selected = Math.mod(root.selected + root.tabs.length - 1, root.tabs.length);
+                }
             }
         }
-    }
-    Rectangle {
-        vertical-stretch: 0.0;
-        background: black;
-        height: 1px;
+        Rectangle {
+            background: black;
+            height: 1px;
+        }
     }
     Rectangle {
         vertical-stretch: 1.0;
