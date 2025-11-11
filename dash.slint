@@ -1,6 +1,6 @@
 export component IconBox {
     in property <string> text: "test";
-    in property <image> icon: @image-url("icons/test.png");
+    in property <image> icon: @image-url("assets/snow.png");
     Rectangle {
         width: 38px;
         height: 12px;
@@ -31,6 +31,7 @@ export component DashBox inherits Rectangle {
     border-width: 1px;
     border-color: black;
     width: 66%;
+    border-radius: 4px;
     GridLayout {
         spacing-vertical: 2px;
         Row {
