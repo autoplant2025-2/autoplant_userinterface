@@ -19,11 +19,18 @@ export component IconBox {
             }
             
             Text {
+                vertical-alignment: center;
                 text: root.text;
                 overflow: elide; 
             }
         }
     }
+}
+
+export component FanBox inherits IconBox {
+    icon: @image-url("assets/fan_a.png");
+    in property <int> num: 60;
+    text: num + "%";
 }
 
 export component DashBox inherits Rectangle {
@@ -34,16 +41,31 @@ export component DashBox inherits Rectangle {
         spacing: 2px;
         padding: 2px;
         Row {
-            IconBox {}
-            IconBox {}
+            FanBox {}
+            IconBox {
+                text: "조명";
+                icon: @image-url("assets/light.png");
+            }
         }
         Row {
-            IconBox {}
-            IconBox {}
+            IconBox {
+                text: "급수";
+                icon: @image-url("assets/water.png");
+            }
+            IconBox {
+                text: "습도";
+                icon: @image-url("assets/fan.png");
+            }
         }
         Row {
-            IconBox {}
-            IconBox {}
+            IconBox {
+                text: "온도";
+                icon: @image-url("assets/humidity.png");
+            }
+            IconBox {
+                text: "영양제";
+                icon: @image-url("assets/nutrition.png");
+            }
         }
     }
 
