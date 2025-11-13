@@ -1,0 +1,203 @@
+// Copyright © SixtyFPS GmbH <info@slint.dev>
+// SPDX-License-Identifier: MIT
+import { KnobButton, KnobImageButton } from "components.slint";
+component VirtualKeyboardButton inherits KnobButton {
+    height: 8px;
+    horizontal-stretch: 0;
+    padding: 0px;
+    in property <string> key;
+    in property <string> key_shift;
+    in property <bool> shift;
+    text: shift ? key_shift : key;
+    callback key_press(key: string);
+    accessible-action-default => {
+        key_press(key);
+        //self.focus();
+    }
+}
+
+component VirtualKeyboardImageButton inherits KnobImageButton {
+    callback key_press();
+    accessible-action-default => {
+        key_press();
+        //self.focus();
+    }
+}
+export struct KeyModel {
+    key: string,
+    shift-key: string,
+}
+export global VirtualKeyboardHandler {
+    in-out property <image> aa: @image-url("assets/keys/arrow_up8.png");
+    in property <[[[KeyModel]]]> default-key-sets: [
+       [
+            [
+                { key: "q", shift-key: "Q" },
+                { key: "w", shift-key: "W"  },
+                { key: "e", shift-key: "E"  },
+                { key: "r", shift-key: "R"  },
+                { key: "t", shift-key: "T"  },
+                { key: "y", shift-key: "Y"  },
+                { key: "u", shift-key: "U"  },
+                { key: "i", shift-key: "I"  },
+                { key: "o", shift-key: "O"  },
+                { key: "p", shift-key: "P"  }
+            ],
+            [
+                { key: "a", shift-key: "A" },
+                { key: "s", shift-key: "S" },
+                { key: "d", shift-key: "D" },
+                { key: "f", shift-key: "F" },
+                { key: "g", shift-key: "G" },
+                { key: "h", shift-key: "H" },
+                { key: "j", shift-key: "J" },
+                { key: "k", shift-key: "K" },
+                { key: "l", shift-key: "L" }
+            ],
+            [
+                { key: "z", shift-key: "Z" },
+                { key: "x", shift-key: "X" },
+                { key: "c", shift-key: "C" },
+                { key: "v", shift-key: "V" },
+                { key: "b", shift-key: "B" },
+                { key: "n", shift-key: "N" },
+                { key: "m", shift-key: "M" },
+                { key: ",", shift-key: ";" },
+                { key: ".", shift-key: ":" },
+                { key: "?", shift-key: "?" }
+            ],
+       ],
+       [
+            [
+                { key: "1", shift-key: "[" },
+                { key: "2", shift-key: "]" },
+                { key: "3", shift-key: "{" },
+                { key: "4", shift-key: "}" },
+                { key: "5", shift-key: "#" },
+                { key: "6", shift-key: "%" },
+                { key: "7", shift-key: "^" },
+                { key: "8", shift-key: "*" },
+                { key: "9", shift-key: "+" },
+                { key: "0", shift-key: "=" }
+            ],
+            [
+                { key: "-", shift-key: "_" },
+                { key: "/", shift-key: "\\" },
+                { key: ":", shift-key: "|" },
+                { key: ";", shift-key: "~" },
+                { key: "(", shift-key: "<" },
+                { key: ")", shift-key: ">" },
+                { key: "€", shift-key: "$" },
+                { key: "&", shift-key: "€" },
+                { key: "@", shift-key: "°" },
+                { key: "'", shift-key: "#" },
+            ],
+            [
+                { key: ".", shift-key: "." },
+                { key: ",", shift-key: "," },
+                { key: "?", shift-key: "?" },
+                { key: "!", shift-key: "!" },
+                { key: "'", shift-key: "'" },
+            ],
+       ]
+    ];
+
+}
+export component VirtualKeyboard  {
+    private property <bool> shift;
+    property <int> current-key-set;
+    public function switch-keyboard() {
+        if (self.current-key-set < VirtualKeyboardHandler.default-key-sets.length - 1) {
+            self.current-key-set += 1;
+        } else {
+            self.current-key-set -= 1;
+        }
+        self.current-key-set = min(VirtualKeyboardHandler.default-key-sets.length - 1, max(0, self.current-key-set))
+    }
+    callback close();
+    callback press(key: string);
+    preferred-width: 100%;
+    VerticalLayout {
+        padding: 0px;
+        spacing: 0px;
+        for row[index] in VirtualKeyboardHandler.default-key-sets[root.current-key-set] : HorizontalLayout {
+            spacing: 0px;
+            if (index == 0) : VirtualKeyboardButton {
+                key: "ESC";
+                key_press => {
+                    root.press(Key.Escape)
+                }
+            }
+            if (index == 1) : VirtualKeyboardButton {
+                key: "Tab";
+                key_press => {
+                    root.press(Key.Tab);
+                }
+            }
+            // shift
+            if (index == 2) : VirtualKeyboardImageButton {
+                image: @image-url("assets/keys/arrow_up8.png");
+                key_press => {
+                    root.shift = !root.shift;
+                }
+            }
+            for km in row : VirtualKeyboardButton {
+                key: km.key;
+                key_shift: km.shift-key;
+                shift <=> root.shift;
+                key_press(key) => {
+                    root.press(key);
+                    root.shift = false;
+                }
+            }
+            if (index == 0) : VirtualKeyboardImageButton {
+                image: @image-url("assets/keys/arrow_left8.png");
+                key_press => {
+                    root.press(Key.Backspace);
+                }
+            }
+            if (index == 1) : VirtualKeyboardImageButton {
+                image: @image-url("assets/keys/arrow_left8.png");
+                key_press => {
+                    root.press(Key.Return);
+                }
+            }
+        }
+        HorizontalLayout {
+            spacing: 4px;
+             VirtualKeyboardButton {
+                key: "=";
+//                icon: Icons.expand-more;
+//                key_press(key) => {
+//                    root.close();
+//                }
+            }
+            VirtualKeyboardImageButton {
+                image: @image-url("assets/keys/key_globe.png");
+                key_press => {
+                    root.switch-keyboard();
+                }
+            }
+            VirtualKeyboardImageButton {
+                horizontal-stretch: 1;
+                image: @image-url("assets/keys/key_space.png");
+                key_press => {
+                    root.shift = false;
+                    root.press(Key.Space);
+                }
+            }
+            VirtualKeyboardImageButton {
+                image: @image-url("assets/keys/arrow_left8.png");
+                key_press => {
+                    root.press(Key.LeftArrow);
+                }
+            }
+            VirtualKeyboardImageButton {
+                image: @image-url("assets/keys/arrow_right8.png");
+                key_press => {
+                    root.press(Key.RightArrow);
+                }
+            }
+        }
+    }
+}

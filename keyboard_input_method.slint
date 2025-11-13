@@ -1,0 +1,55 @@
+import { LineEdit } from "std-widgets.slint";
+import { VirtualKeyboard } from "keyboard.slint";
+export global KeyboardInputMethodGlobal {
+    in-out property <string> field_name;
+    in-out property <string> text: "faafa";
+    in-out property <bool> keyboard_open;
+    in-out property <bool> keyboard_accept;
+    pure callback backspace();
+}
+
+export component KeyboardInputMethod inherits VerticalLayout {
+    spacing: 1px;
+    alignment: stretch;
+    VerticalLayout {
+        vertical-stretch: 0;
+        spacing: 0px;
+        Text {
+            text: "키보드 입력기";
+        }
+        Rectangle {
+            height: 1px;
+            background: black;
+        }
+    }
+    Text {
+        text: KeyboardInputMethodGlobal.field_name + ":";
+    }
+    Rectangle {
+        vertical-stretch: 1;
+        width: 80%;
+        horizontal-stretch: 1;
+        Text {
+             horizontal-alignment: left;
+             vertical-alignment: top;
+             text: "> " + KeyboardInputMethodGlobal.text + " <";
+        }
+    }
+    VirtualKeyboard {
+        press(key) => {
+            if (key == Key.Backspace) {
+                KeyboardInputMethodGlobal.backspace();
+            } else if (key == Key.Escape) {
+                KeyboardInputMethodGlobal.keyboard_accept = false;
+                KeyboardInputMethodGlobal.keyboard_open = false;
+            } else if (key == Key.Return) {
+                KeyboardInputMethodGlobal.keyboard_accept = true;
+                KeyboardInputMethodGlobal.keyboard_open = false;
+            } else if (key == Key.RightArrow || key == Key.LeftArrow){
+
+            } else {
+                KeyboardInputMethodGlobal.text += key;
+            }
+        }
+    }
+}

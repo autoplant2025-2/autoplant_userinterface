@@ -1,0 +1,17 @@
+# make_8px_bitmap.pe
+# Usage: fontforge -script make_8px_bitmap.pe input.ttf output-8px.ttf
+
+Open($1)
+Reencode("unicode")
+
+# Create a bitmap strike at 8 px
+SelectAll()
+AutoHint()
+AutoInstr()
+BuildAccented()
+BuildBitmap(8)
+
+# Generate a bitmap-only TTF
+Generate($2, "", 1)   # 1 = bitmap only
+Quit()
+

@@ -1,7 +1,11 @@
 import { Button, VerticalBox, TabWidget, ScrollView, HorizontalBox } from "std-widgets.slint";
-import "./dalmoori.ttf";
+import "./dalmoorli.ttf";
 import {DashBoard} from "dash.slint";
 import {KnobCapture, SpinBox, Blinker, Counter} from "components.slint";
+import { VirtualKeyboard } from "keyboard.slint";
+import { KeyboardInputMethod, KeyboardInputMethodGlobal } from "keyboard_input_method.slint";
+
+export { KeyboardInputMethodGlobal }
 
 component SmallTabWidget inherits VerticalLayout {
     alignment: stretch;
@@ -45,11 +49,8 @@ component SmallTabWidget inherits VerticalLayout {
                 wrap: TextWrap.word-wrap;
                 text: "menu screen";
             }
-            SpinBox {
-                min: -1;
-                max: 25;
-                step: 0.01;
-            }
+
+
         }
     }
 }
@@ -59,8 +60,8 @@ export component EmbeddedUI inherits Window {
     height: 64px;
     default-font-family: "dalmoori";
     default-font-size: 8px;
-    SmallTabWidget {}
-
+    //SmallTabWidget {}
+    KeyboardInputMethod {}
 
     timer := Timer {
         interval: 0.5s;
@@ -74,4 +75,5 @@ export component EmbeddedUI inherits Window {
             Counter.count = Math.mod((Counter.count + 1), 60);
         }
     }
+
 }
