@@ -41,9 +41,7 @@ export component FanBox inherits IconBox {
 export component LightBox inherits IconBox {
     icon: @image-url("assets/light.png");
     in property <int> num: 50;
-    in property <int> target: 70;
-    is_long: true;
-    text: num + "/"+ target + "%";
+    text: num + "%";
 }
 
 export component WaterBox inherits IconBox {
@@ -52,9 +50,9 @@ export component WaterBox inherits IconBox {
     text: num + "%";
 }
 export component HumBox inherits IconBox {
-    icon: @image-url("assets/humidity_b.png");
     in property <int> num: 20;
-    in property <int> target: 60;
+    in property <int> target: 70;
+    icon: Math.mod(Counter.count, (120-Math.abs(num - target)/10))==0?@image-url("assets/humidity_b.png"): @image-url("assets/humidity.png");
     is_long: true;
     text: num + "/"+ target + "%";
 }
