@@ -31,38 +31,43 @@ export component IconBox {
 }
 
 export component FanBox inherits IconBox {
-    in property <int> num: 60;
-    icon: (Math.mod(Counter.count, (100-num)/60)==0) ? @image-url("assets/fan_a.png") : @image-url("assets/fan_b.png");
+    in property <int> num: 30;
+    icon: (Math.mod(Counter.count, (120-num)/10)==0) ? @image-url("assets/fan_a.png") : @image-url("assets/fan_b.png");
     text: num + "%";
 }
 
 export component LightBox inherits IconBox {
     icon: @image-url("assets/light.png");
     in property <int> num: 50;
-    text: num + "%";
+    in property <int> target: 70;
+    text: num + "/"+ target + "%";
 }
 
 export component WaterBox inherits IconBox {
     icon: @image-url("assets/humidity.png");
     in property <int> num: 30;
-    text: num + "%";
+    in property <int> target: 60;
+    text: num + "/"+ target + "%";
 }
 export component HumBox inherits IconBox {
     icon: @image-url("assets/humidity_b.png");
     in property <int> num: 20;
-    text: num + "%";
+    in property <int> target: 60;
+    text: num + "/"+ target + "%";
 }
 
 export component TempBox inherits IconBox {
     icon: @image-url("assets/thermometer.png");
     in property <int> num: 24;
-    text: num + "°C";
+    in property <int> target: 27;
+    text: num + "/"+ target+ "°C";
 }
 
 export component CoolBox inherits IconBox {
     icon: @image-url("assets/snow.png");
     in property <int> num: 5;
-    text: num + "%";
+    in property <int> target;
+    text: num + "/"+ target + "%";
 }
 export component DashBox inherits Rectangle {
     border-width: 1px;
