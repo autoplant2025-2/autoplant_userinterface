@@ -1,10 +1,11 @@
 import { Blinker, Counter } from "components.slint";
 
 export component IconBox {
-    in property <string> text: "test";
+    in property <string> text: "00";
     in property <image> icon: @image-url("assets/snow.png");
+    in property <bool> is_long: false;
     Rectangle {
-        width: 38px;
+        width: (is_long)?44px:30px;
         height: 12px;
         HorizontalLayout {
             width: 100%;
@@ -21,7 +22,8 @@ export component IconBox {
             }
             
             Text {
-                height: 8px;
+                //viewr사용시 height 주석처리
+                //height: 8px;
                 vertical-alignment: center;
                 text: root.text;
                 overflow: elide; 
@@ -40,19 +42,20 @@ export component LightBox inherits IconBox {
     icon: @image-url("assets/light.png");
     in property <int> num: 50;
     in property <int> target: 70;
+    is_long: true;
     text: num + "/"+ target + "%";
 }
 
 export component WaterBox inherits IconBox {
     icon: @image-url("assets/humidity.png");
     in property <int> num: 30;
-    in property <int> target: 60;
-    text: num + "/"+ target + "%";
+    text: num + "%";
 }
 export component HumBox inherits IconBox {
     icon: @image-url("assets/humidity_b.png");
     in property <int> num: 20;
     in property <int> target: 60;
+    is_long: true;
     text: num + "/"+ target + "%";
 }
 
@@ -60,14 +63,14 @@ export component TempBox inherits IconBox {
     icon: @image-url("assets/thermometer.png");
     in property <int> num: 24;
     in property <int> target: 27;
+    is_long: true;
     text: num + "/"+ target+ "°C";
 }
 
 export component CoolBox inherits IconBox {
     icon: @image-url("assets/snow.png");
-    in property <int> num: 5;
-    in property <int> target;
-    text: num + "/"+ target + "%";
+    in property <int> num: 15;
+    text: num + "%";
 }
 export component DashBox inherits Rectangle {
     border-width: 1px;
@@ -85,8 +88,8 @@ export component DashBox inherits Rectangle {
             HumBox {}
         }
         Row {
-            TempBox {}
             CoolBox {}
+            TempBox {}
         }
     }
 
