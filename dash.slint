@@ -96,13 +96,21 @@ export component DashBox inherits Rectangle {
 }
 
 export component DashBoard inherits VerticalLayout {
+    in property <int> day: 20;
     alignment: stretch;
     vertical-stretch: 1.0;
     spacing: 1px;
-    Text {
-        height: 8px;
-        wrap: TextWrap.word-wrap;
-        text: "<식물이름>";
+    HorizontalLayout {
+        Text {
+            height: 8px;
+            wrap: TextWrap.word-wrap;
+            text: "<식물이름>";
+        }
+        Text {
+            height: 8px;
+            horizontal-alignment: left;
+            text: "-DAY " + day;
+        }
     }
         HorizontalLayout {
             vertical-stretch: 1.0;
