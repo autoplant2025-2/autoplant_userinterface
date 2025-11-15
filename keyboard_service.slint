@@ -1,0 +1,15 @@
+export global KeyboardWindowLogic {
+    in-out property <bool> keyboard_open;
+    in-out property <length> window_offset_x;
+    in-out property <length> window_offset_y;
+    keyboard_open: TextInputInterface.text-input-focused;
+    changed keyboard_open => {
+        if (keyboard_open) {
+            open()
+        } else {
+            window_offset_x = 0;
+            window_offset_y = 0;
+        }
+    }
+    callback open();
+}

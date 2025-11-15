@@ -1,0 +1,348 @@
+// Copyright © SixtyFPS GmbH <info@slint.dev>
+// SPDX-License-Identifier: MIT
+import { KnobButton, KnobImageButton } from "components.slint";
+component VirtualKeyboardButton inherits FocusScope { //similar to knobbutton, but far lightweight
+    height: 8px;
+    in property <string> key;
+    in property <string> key_shift;
+    in property <bool> shift;
+
+    in-out property <string> text: shift ? key_shift : key;
+    rect := Rectangle {
+        horizontal-stretch: 1;
+        text := Text {
+            text <=> root.text;
+            color: root.has-focus ? white : black;
+            horizontal-alignment: TextHorizontalAlignment.center;
+            vertical-alignment: TextVerticalAlignment.center;
+        }
+        background: root.has-focus ? black : transparent;
+    }
+    callback key_down(key: string);
+    callback key_down_repeat(key: string);
+    callback key_up(key: string);
+    key-pressed(event) => {
+        if (event.text == Key.Return) {
+            if (event.repeat) {
+                key_down_repeat(shift ? key_shift : key);
+            } else {
+                key_down(shift ? key_shift : key);
+            }
+            return accept;
+        }
+        return reject;
+    }
+    key-released(event) => {
+        if (event.text == Key.Return) {
+            key_up(shift ? key_shift : key);
+            return accept;
+        }
+        return reject;
+    }
+    accessible-role: AccessibleRole.button;
+}
+
+
+
+component VirtualKeyboardImageButton inherits FocusScope {
+    height: 8px;
+    in property <image> image;
+    rect := Rectangle {
+        image := Image {
+            source <=> root.image;
+            colorize: root.has-focus ? white : black;
+        }
+        background: root.has-focus ? black : transparent;
+    }
+    callback key_down(key: string);
+    callback key_down_repeat(key: string);
+    callback key_up(key: string);
+    in property <string> key;
+    in property <string> key_shift;
+    in property <bool> shift;
+    key-pressed(event) => {
+        if (event.text == Key.Return) {
+            if (event.repeat) {
+                key_down_repeat(shift ? key_shift : key);
+            } else {
+                key_down(shift ? key_shift : key);
+            }
+            return accept;
+        }
+        return reject;
+    }
+    key-released(event) => {
+        if (event.text == Key.Return) {
+            key_up(shift ? key_shift : key);
+            return accept;
+        }
+        return reject;
+    }
+    accessible-role: AccessibleRole.button;
+}
+
+component VirtualKeyboardShiftButton inherits FocusScope {
+    height: 8px;
+    in-out property <bool> shift;
+    rect := Rectangle {
+        image := Image {
+            source: shift ? @image-url("assets/keys/key_shift_active.png") : @image-url("assets/keys/key_shift.png");
+            colorize: root.has-focus ? white : black;
+        }
+        background: root.has-focus ? black : transparent;
+    }
+    callback key_down;
+    callback key_up;
+    key-released(event) => {
+        if (event.text == Key.Return) {
+            shift = !shift;
+            return accept;
+        }
+        return reject;
+    }
+    accessible-role: AccessibleRole.button;
+}
+
+
+export struct KeyModel {
+    key: string,
+    shift-key: string,
+}
+export global VirtualKeyboardHandler {
+    in-out property <image> aa: @image-url("assets/keys/arrow_up8.png");
+    in property <[[[KeyModel]]]> default-key-sets: [
+       [
+            [
+                { key: "q", shift-key: "Q" },
+                { key: "w", shift-key: "W"  },
+                { key: "e", shift-key: "E"  },
+                { key: "r", shift-key: "R"  },
+                { key: "t", shift-key: "T"  },
+                { key: "y", shift-key: "Y"  },
+                { key: "u", shift-key: "U"  },
+                { key: "i", shift-key: "I"  },
+                { key: "o", shift-key: "O"  },
+                { key: "p", shift-key: "P"  }
+            ],
+            [
+                { key: "a", shift-key: "A" },
+                { key: "s", shift-key: "S" },
+                { key: "d", shift-key: "D" },
+                { key: "f", shift-key: "F" },
+                { key: "g", shift-key: "G" },
+                { key: "h", shift-key: "H" },
+                { key: "j", shift-key: "J" },
+                { key: "k", shift-key: "K" },
+                { key: "l", shift-key: "L" }
+            ],
+            [
+                { key: "z", shift-key: "Z" },
+                { key: "x", shift-key: "X" },
+                { key: "c", shift-key: "C" },
+                { key: "v", shift-key: "V" },
+                { key: "b", shift-key: "B" },
+                { key: "n", shift-key: "N" },
+                { key: "m", shift-key: "M" },
+                { key: ",", shift-key: ";" },
+                { key: ".", shift-key: ":" },
+                { key: "?", shift-key: "?" }
+            ],
+       ],
+       [
+            [
+                { key: "1", shift-key: "[" },
+                { key: "2", shift-key: "]" },
+                { key: "3", shift-key: "{" },
+                { key: "4", shift-key: "}" },
+                { key: "5", shift-key: "#" },
+                { key: "6", shift-key: "%" },
+                { key: "7", shift-key: "^" },
+                { key: "8", shift-key: "*" },
+                { key: "9", shift-key: "+" },
+                { key: "0", shift-key: "=" }
+            ],
+            [
+                { key: "-", shift-key: "_" },
+                { key: "/", shift-key: "\\" },
+                { key: ":", shift-key: "|" },
+                { key: ";", shift-key: "~" },
+                { key: "(", shift-key: "<" },
+                { key: ")", shift-key: ">" },
+                { key: "€", shift-key: "$" },
+                { key: "&", shift-key: "€" },
+                { key: "@", shift-key: "°" },
+                { key: "'", shift-key: "#" },
+            ],
+            [
+                { key: ".", shift-key: "." },
+                { key: ",", shift-key: "," },
+                { key: "?", shift-key: "?" },
+                { key: "!", shift-key: "!" },
+                { key: "'", shift-key: "'" },
+            ],
+       ]
+    ];
+
+}
+export component VirtualKeyboard  {
+    in-out property <bool> shift;
+    property <int> current-key-set;
+    public function switch-keyboard() {
+        if (self.current-key-set < VirtualKeyboardHandler.default-key-sets.length - 1) {
+            self.current-key-set += 1;
+        } else {
+            self.current-key-set -= 1;
+        }
+        self.current-key-set = min(VirtualKeyboardHandler.default-key-sets.length - 1, max(0, self.current-key-set))
+    }
+    callback key_down(key: string);
+    callback key_down_repeat(key: string);
+    callback key_up(key: string);
+    preferred-width: 100%;
+    //shift handled here
+    changed shift => {
+        if (shift) {
+            root.key_down(Key.Shift)
+        } else {
+            root.key_up(Key.Shift)
+        }
+    }
+    VerticalLayout {
+        spacing: 0px;
+        for row[index] in VirtualKeyboardHandler.default-key-sets[root.current-key-set] : HorizontalLayout {
+            spacing: 0px;
+            alignment: stretch;
+            if (index == 0) : VirtualKeyboardButton {
+                key: Key.Escape;
+                text: "ESC";
+                key_down(key) => {
+                    root.key_down(key);
+                }
+                key_down_repeat(key) => {
+                    root.key_down_repeat(key);
+                }
+                key_up(key) => {
+                    root.key_up(key);
+                }
+            }
+            if (index == 1) : VirtualKeyboardButton {
+                key: Key.Tab;
+                text: "TAB";
+                key_down(key) => {
+                    root.key_down(key);
+                }
+                key_down_repeat(key) => {
+                    root.key_down_repeat(key);
+                }
+                key_up(key) => {
+                    root.key_up(key);
+                }
+            }
+            // shift
+            if (index == 2) : VirtualKeyboardShiftButton {
+                shift <=> root.shift;
+            }
+            for km in row : VirtualKeyboardButton {
+                key: km.key;
+                key_shift: km.shift-key;
+                shift <=> root.shift;
+                key_down(key) => {
+                    root.key_down(key);
+                }
+                key_down_repeat(key) => {
+                    root.key_down_repeat(key);
+                }
+                key_up(key) => {
+                    root.key_up(key);
+                    root.shift = false;
+                }
+            }
+            if (index == 0) : VirtualKeyboardImageButton {
+                image: @image-url("assets/keys/key_backspace.png");
+                key: Key.Backspace;
+                key_down(key) => {
+                    root.key_down(key);
+                }
+                key_down_repeat(key) => {
+                    root.key_down_repeat(key);
+                }
+                key_up(key) => {
+                    root.key_up(key);
+                }
+            }
+            if (index == 1) : VirtualKeyboardImageButton {
+                image: @image-url("assets/keys/key_return.png");
+                key: Key.Return;
+                key_down(key) => {
+                    root.key_down(key);
+                }
+                key_down_repeat(key) => {
+                    root.key_down_repeat(key);
+                }
+                key_up(key) => {
+                    root.key_up(key);
+                }
+            }
+        }
+        HorizontalLayout {
+            spacing: 4px;
+//             VirtualKeyboardButton {
+//                key: "=";
+////                icon: Icons.expand-more;
+////                key_press(key) => {
+////                    root.close();
+////                }
+//            }
+            VirtualKeyboardImageButton {
+                image: @image-url("assets/keys/key_globe.png");
+                key_up => {
+                    root.switch-keyboard();
+                }
+            }
+            VirtualKeyboardImageButton {
+                horizontal-stretch: 1;
+                image: @image-url("assets/keys/key_space.png");
+                key: Key.Space;
+                key_down(key) => {
+                    root.key_down(key);
+                }
+                key_down_repeat(key) => {
+                    root.key_down_repeat(key);
+                }
+                key_up(key) => {
+                    root.key_up(key);
+                }
+            }
+            VirtualKeyboardImageButton {
+                image: @image-url("assets/keys/arrow_left8.png");
+                key: Key.LeftArrow;
+                key_shift: "\u{1B}\u{5B}31}\u{3B}\u{32}\u{44}";
+                //shift <=> root.shift;
+                key_down(key) => {
+                    root.key_down(key);
+                }
+                key_down_repeat(key) => {
+                    root.key_down_repeat(key);
+                }
+                key_up(key) => {
+                    root.key_up(key);
+                }
+            }
+            VirtualKeyboardImageButton {
+                image: @image-url("assets/keys/arrow_right8.png");
+                key: Key.RightArrow;
+                key_shift: "\u{1B}\u{5B}31}\u{3B}\u{32}\u{43}";
+                //shift <=> root.shift;
+                key_down(key) => {
+                    root.key_down(key);
+                }
+                key_down_repeat(key) => {
+                    root.key_down_repeat(key);
+                }
+                key_up(key) => {
+                    root.key_up(key);
+                }
+            }
+        }
+    }
+}

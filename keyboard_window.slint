@@ -1,0 +1,80 @@
+import { VirtualKeyboard } from "keyboard.slint";
+import { KnobButton } from "components.slint";
+export component KeyboardWindow inherits Window {
+    width: 128px;
+    height: 40px;
+    default-font-family: "dalmoori";
+    default-font-size: 8px;
+    callback close();
+    callback key_down(key: string);
+    callback key_down_repeat(key: string);
+    callback key_up(key: string);
+    VerticalLayout {
+        Rectangle {
+            background: black;
+            height: 1px;
+        }
+        HorizontalLayout {
+            KnobButton {
+                text: "CtrlA";
+                cursors: true;
+                accessible-action-default => {
+                    key_down(Key.Control);
+                    key_down("a");
+                    key_up("a");
+                    key_up(Key.Control);
+                }
+            }
+            KnobButton {
+                text: "CtrlX";
+                cursors: true;
+                accessible-action-default => {
+                    key_down(Key.Control);
+                    key_down("x");
+                    key_up("x");
+                    key_up(Key.Control);
+                }
+            }
+            KnobButton {
+                text: "CtrlC";
+                cursors: true;
+                accessible-action-default => {
+                    key_down(Key.Control);
+                    key_down("c");
+                    key_up("c");
+                    key_up(Key.Control);
+                }
+            }
+            KnobButton {
+                text: "CtrlV";
+                cursors: true;
+                accessible-action-default => {
+                    key_down(Key.Control);
+                    key_down("v");
+                    key_up("v");
+                    key_up(Key.Control);
+                }
+            }
+            KnobButton {
+                text: "close";
+                cursors: true;
+                accessible-action-default => {
+                    keyboard.shift = false;
+                    root.close()
+                }
+            }
+        }
+        keyboard := VirtualKeyboard {
+            key_down(key) => {
+                root.key_down(key);
+            }
+            key_down_repeat(key) => {
+                root.key_down_repeat(key);
+            }
+            key_up(key) => {
+                root.key_up(key);
+            }
+        }
+    }
+}
+

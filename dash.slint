@@ -1,4 +1,5 @@
-import { Blinker, Counter } from "components.slint";
+import { Blinker, Counter, KnobButton, KnobImageButton, KnobLineEdit } from "components.slint";
+import { LineEdit } from "std-widgets.slint";
 
 export component IconBox {
     in property <string> text: "00";
@@ -93,6 +94,8 @@ export component DashBox inherits Rectangle {
 
 }
 
+
+
 export component DashBoard inherits VerticalLayout {
     in property <int> day: 20;
     alignment: stretch;
@@ -100,12 +103,10 @@ export component DashBoard inherits VerticalLayout {
     spacing: 1px;
     HorizontalLayout {
         Text {
-            height: 8px;
             wrap: TextWrap.word-wrap;
             text: "<식물이름>";
         }
         Text {
-            height: 8px;
             horizontal-alignment: left;
             text: "-DAY " + day;
         }
