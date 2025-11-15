@@ -1,18 +1,22 @@
-import { Button, VerticalBox, TabWidget, ScrollView, HorizontalBox } from "std-widgets.slint";
+import { Button, VerticalBox, TabWidget, ScrollView, HorizontalBox,     DatePickerPopup, LineEdit } from "std-widgets.slint";
 import "./dalmoorli.ttf";
 import {DashBoard} from "dash.slint";
-import {KnobCapture, SpinBox, Blinker, Counter} from "components.slint";
+import {KnobCapture, SpinBox, Blinker, Counter, KnobLineEdit} from "components.slint";
 import { VirtualKeyboard } from "keyboard.slint";
-import { KeyboardInputMethod, KeyboardInputMethodGlobal } from "keyboard_input_method.slint";
 
-export { KeyboardInputMethodGlobal }
+import { KeyboardWindowLogic } from "keyboard_service.slint";
+import { KeyboardWindow } from "keyboard_window.slint";
+
+export { KeyboardWindow, KeyboardWindowLogic }
+
+
 
 component SmallTabWidget inherits VerticalLayout {
     alignment: stretch;
     spacing: 1px;
     in property <[{name: string, id: int}]> tabs: [
         {name: "대시보드", id: 0},
-        {name: "menu", id: 1}
+        {name: "컴포넌트 테스트", id: 1}
     ];
     in-out property <int> selected: 0;
     VerticalLayout {
@@ -23,6 +27,7 @@ component SmallTabWidget inherits VerticalLayout {
             alignment: LayoutAlignment.start;
             vertical-stretch: 0.0;
             KnobCapture { // the tab selector
+                cursors: true;
                 text: root.tabs[root.selected].name;
                 accessible-role: AccessibleRole.tab-list;
                 accessible-action-increment => {
@@ -38,30 +43,37 @@ component SmallTabWidget inherits VerticalLayout {
             height: 1px;
         }
     }
-    Rectangle {
-        vertical-stretch: 1.0;
-        DashBoard{
-            visible: root.selected == 0;
+    if root.selected == 0: DashBoard{
+        visible: root.selected == 0;
+    }
+    if root.selected == 1: VerticalLayout {
+        Text {
+            wrap: TextWrap.word-wrap;
+            text: "컴포넌트 테스트용 화면입니다";
         }
-        VerticalLayout {
-            visible: root.selected == 1;
-            Text {
-                wrap: TextWrap.word-wrap;
-                text: "menu screen";
-            }
-
-
+        KnobLineEdit {
+            text: "키보드 입력 테스트";
+        }
+        KnobLineEdit {
+            text: "비밀번호 입력 테스트";
+            input-type: password;
         }
     }
 }
 
 export component EmbeddedUI inherits Window {
+    x <=> KeyboardWindowLogic.window_offset_x;
+    y <=> KeyboardWindowLogic.window_offset_y;
     width: 128px;
     height: 64px;
     default-font-family: "dalmoori";
     default-font-size: 8px;
-    //SmallTabWidget {}
-    KeyboardInputMethod {}
+    //ScrollView {
+        SmallTabWidget {
+            width: 128px;
+            height: 64px;
+        }
+    //}
 
     timer := Timer {
         interval: 0.5s;

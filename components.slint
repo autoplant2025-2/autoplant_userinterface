@@ -1,39 +1,29 @@
-//import {HorizontalLayout} from "std-widgets.slint";
-
+import { KeyboardWindowLogic } from "keyboard_service.slint";
 export component KnobCapture inherits FocusScope {
     in-out property <string> text: "";
+    in property <bool> cursors: false;
     hbox := HorizontalLayout {
-        // TODO replace >< with icons, to reduce heap memory usag
-        Text {
-            text: ">";
-            color: root.has-focus ? Colors.black : Colors.transparent;
-            horizontal-alignment: TextHorizontalAlignment.right;
+        alignment: center;
+        spacing: 0px;
+        if cursors: Image {
+            visible: root.has-focus;
+            source: @image-url("assets/cursor_right.png");
         }
         rect := Rectangle {
             text := Text {
                 text <=> root.text;
                 color: root.has-focus ? Blinker.white(root.accessible-expanded) : black;
-                letter-spacing: 0;
                 horizontal-alignment: TextHorizontalAlignment.center;
                 vertical-alignment: TextVerticalAlignment.center;
             }
             background: root.has-focus ? Blinker.ntransparent(root.accessible-expanded) : transparent;
         }
-        Text {
-            text: "<";
-            color: root.has-focus ? Colors.black : Colors.transparent;
-            horizontal-alignment: TextHorizontalAlignment.left;
+        if cursors: Image {
+            visible: root.has-focus;
+            source: @image-url("assets/cursor_left.png");
         }
-        alignment: start;
-        vertical-stretch: 0.0;
-        padding: 0.0;
     }
     key-pressed(event) => {
-        if (event.text == Key.Return) {
-            self.accessible-expanded = !self.accessible-expanded;
-            self.accessible-action-default();
-            return EventResult.accept;
-        }
         if (!self.accessible-expanded) {
             return EventResult.reject;
         }
@@ -43,6 +33,14 @@ export component KnobCapture inherits FocusScope {
         }
         if (event.text == Key.Backtab || event.text == Key.LeftArrow) {
             self.accessible-action-decrement();
+            return EventResult.accept;
+        }
+        return EventResult.reject;
+    }
+    key-released(event) => {
+        if (event.text == Key.Return) {
+            self.accessible-expanded = !self.accessible-expanded;
+            self.accessible-action-default();
             return EventResult.accept;
         }
         return EventResult.reject;
@@ -71,16 +69,29 @@ export component SpinBox inherits KnobCapture {
 
 export component KnobButton inherits FocusScope {
     in-out property <string> text;
-    rect := Rectangle {
-        text := Text {
-            text <=> root.text;
-            color: root.has-focus ? white : black;
-            horizontal-alignment: center;
-            vertical-alignment: center;
+    in property <bool> cursors: false;
+    hbox := HorizontalLayout {
+        alignment: center;
+        spacing: 0px;
+        if cursors: Image {
+            visible: root.has-focus;
+            source: @image-url("assets/cursor_right.png");
         }
-        background: root.has-focus ? black : transparent;
+        rect := Rectangle {
+            text := Text {
+                text <=> root.text;
+                color: root.has-focus ? white : black;
+                horizontal-alignment: TextHorizontalAlignment.center;
+                vertical-alignment: TextVerticalAlignment.center;
+            }
+            background: root.has-focus ? black : transparent;
+        }
+        if cursors: Image {
+            visible: root.has-focus;
+            source: @image-url("assets/cursor_left.png");
+        }
     }
-    key-pressed(event) => {
+    key-released(event) => {
         if (event.text == Key.Return) {
             self.accessible-action-default();
             return EventResult.accept;
@@ -92,14 +103,27 @@ export component KnobButton inherits FocusScope {
 
 export component KnobImageButton inherits FocusScope {
     in-out property <image> image;
-    rect := Rectangle {
-        image := Image {
-            source <=> root.image;
-            colorize: root.has-focus ? white : black;
+    in property <bool> cursors: false;
+    hbox := HorizontalLayout {
+        alignment: center;
+        spacing: 0px;
+        if cursors: Image {
+            visible: root.has-focus;
+            source: @image-url("assets/cursor_right.png");
         }
-        background: root.has-focus ? black : transparent;
+        rect := Rectangle {
+            image := Image {
+                source <=> root.image;
+                colorize: root.has-focus ? white : black;
+            }
+            background: root.has-focus ? black : transparent;
+        }
+        if cursors: Image {
+            visible: root.has-focus;
+            source: @image-url("assets/cursor_left.png");
+        }
     }
-    key-pressed(event) => {
+    key-released(event) => {
         if (event.text == Key.Return) {
             self.accessible-action-default();
             return EventResult.accept;
@@ -107,6 +131,39 @@ export component KnobImageButton inherits FocusScope {
         return EventResult.reject;
     }
     accessible-role: AccessibleRole.button;
+}
+
+export component KnobLineEdit inherits FocusScope {
+    in-out property <string> text;
+    in property <InputType> input-type;
+    VerticalLayout {
+        spacing: 0px;
+        HorizontalLayout {
+            alignment: stretch;
+            line_edit := TextInput {
+                horizontal-stretch: 1;
+                text <=> root.text;
+                single-line: true;
+                input-type <=> root.input-type;
+            }
+            forward-focus: keyboard_button;
+            keyboard_button := KnobImageButton {
+                vertical-stretch: 0;
+                horizontal-stretch: 0;
+                image: @image-url("assets/keyboard.png");
+                accessible-action-default => {
+                    line_edit.focus();
+                    KeyboardWindowLogic.open();
+                    KeyboardWindowLogic.window_offset_y = -line_edit.absolute-position.y;
+                }
+                cursors: true;
+            }
+        }
+        Rectangle {
+            height: 1px;
+            background: black;
+        }
+    }
 }
 
 
