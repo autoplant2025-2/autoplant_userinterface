@@ -1,18 +1,19 @@
-import { Blinker, Counter, KnobButton, KnobImageButton, KnobLineEdit } from "components.slint";
+import { Blinker, Counter, KnobButton, KnobImageButton, KnobLineEdit, PlantValue } from "components.slint";
 import { LineEdit } from "std-widgets.slint";
 
 export component IconBox {
     in property <string> text: "00";
     in property <image> icon: @image-url("assets/snow.png");
     in property <bool> is_long: false;
+    in property <bool> light: false;
+
     Rectangle {
-        width: (is_long)?44px:30px;
+        width: (is_long)?44px:32px;
         height: 12px;
         HorizontalLayout {
             width: 100%;
             height: 100%;
-            spacing: 3px;
-            
+            spacing: (light)?15px:3px;
             alignment: center;
 
             Image {
@@ -20,12 +21,14 @@ export component IconBox {
                 height: 12px;
                 source: root.icon;
                 accessible-label: "icon";
+                horizontal-alignment: left;
             }
             
             Text {
                 //viewr사용시 height 주석처리
                 //height: 8px;
                 vertical-alignment: center;
+                horizontal-alignment: right;
                 text: root.text;
                 overflow: elide; 
             }
@@ -34,25 +37,27 @@ export component IconBox {
 }
 
 export component FanBox inherits IconBox {
-    in property <int> num: 30;
+    in property <int> num: PlantValue.FanNum;
     icon: (Math.mod(Counter.count, (120-num)/10)==0) ? @image-url("assets/fan_a.png") : @image-url("assets/fan_b.png");
     text: num + "%";
 }
 
 export component LightBox inherits IconBox {
     icon: @image-url("assets/light.png");
-    in property <int> num: 50;
+    in property <int> num: PlantValue.LightNum;
     text: num + "%";
+    is_long: true;
+    light: true;
 }
 
 export component WaterBox inherits IconBox {
     icon: @image-url("assets/humidity.png");
-    in property <int> num: 30;
+    in property <int> num: PlantValue.WaterNum;
     text: num + "%";
 }
 export component HumBox inherits IconBox {
-    in property <int> num: 20;
-    in property <int> target: 70;
+    in property <int> num: PlantValue.HumNum;
+    in property <int> target: PlantValue.HumTarget;
     icon: Math.mod(Counter.count, (120-Math.abs(num - target)/10))==0?@image-url("assets/humidity_b.png"): @image-url("assets/humidity.png");
     is_long: true;
     text: num + "/"+ target + "%";
@@ -60,15 +65,26 @@ export component HumBox inherits IconBox {
 
 export component TempBox inherits IconBox {
     icon: @image-url("assets/thermometer.png");
-    in property <int> num: 24;
-    in property <int> target: 27;
+    in property <int> num: PlantValue.TempNum;
+    in property <int> target: PlantValue.TempTarget;
     is_long: true;
     text: num + "/"+ target+ "°C";
 }
 
 export component CoolBox inherits IconBox {
     icon: @image-url("assets/snow.png");
-    in property <int> num: 15;
+    in property <int> num: PlantValue.CoolNum;
+    text: num + "%";
+}
+
+export component OutTemp inherits IconBox {
+    icon: @image-url("assets/thermometer.png");
+    in property <int> num: PlantValue.OutTempNum;
+    text: num + "°C";
+}
+export component OutHum inherits IconBox {
+    icon: @image-url("assets/humidity.png");
+    in property <int> num: PlantValue.OutHumNum;
     text: num + "%";
 }
 export component DashBox inherits Rectangle {
@@ -116,8 +132,8 @@ export component DashBoard inherits VerticalLayout {
             DashBox {}
             VerticalLayout {
                 spacing: 2px;
-                IconBox {}
-                IconBox {}
+                OutTemp {}
+                OutHum {}
             }
 
         }
