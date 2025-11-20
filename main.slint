@@ -1,8 +1,9 @@
 import { Button, VerticalBox, TabWidget, ScrollView, HorizontalBox,     DatePickerPopup, LineEdit } from "std-widgets.slint";
 import "./dalmoorli.ttf";
-import {DashBoard} from "dash.slint";
-import {KnobCapture, SpinBox, Blinker, Counter, KnobLineEdit} from "components.slint";
+import {DashBoard, PlantNameValue, PlantValue, PlantName} from "dash.slint";
+import {KnobCapture, SpinBox, Blinker, Counter, KnobLineEdit, KnobButton} from "components.slint";
 import { VirtualKeyboard } from "keyboard.slint";
+import { edit } from "edit.slint";
 
 import { KeyboardWindowLogic } from "keyboard_service.slint";
 import { KeyboardWindow } from "keyboard_window.slint";
@@ -16,7 +17,8 @@ component SmallTabWidget inherits VerticalLayout {
     spacing: 1px;
     in property <[{name: string, id: int}]> tabs: [
         {name: "대시보드", id: 0},
-        {name: "컴포넌트 테스트", id: 1}
+        {name: "식물 수정", id: 1},
+        {name: "컴포넌트 테스트", id: 2}
     ];
     in-out property <int> selected: 0;
     VerticalLayout {
@@ -46,7 +48,8 @@ component SmallTabWidget inherits VerticalLayout {
     if root.selected == 0: DashBoard{
         visible: root.selected == 0;
     }
-    if root.selected == 1: VerticalLayout {
+    if root.selected == 1: edit{}
+    if root.selected == 2: VerticalLayout {
         Text {
             wrap: TextWrap.word-wrap;
             text: "컴포넌트 테스트용 화면입니다";

@@ -48,12 +48,12 @@ export component KnobCapture inherits FocusScope {
 }
 
 export component SpinBox inherits KnobCapture {
-    in-out property <float> value: 0.0;
-    in property <float> step: 1.0;
-    in property <float> min: -9999.0;
-    in property <float> max: 9999.0;
+    in-out property <int> value: 0;
+    in property <int> step: 1;
+    in property <int> min: -9999;
+    in property <int> max: 9999;
 
-    text: value.to-fixed(4);
+    text: value;
 
     accessible-role: AccessibleRole.spinbox;
 
@@ -141,6 +141,8 @@ export component KnobLineEdit inherits FocusScope {
         HorizontalLayout {
             alignment: stretch;
             line_edit := TextInput {
+                vertical-stretch: 0;
+                wrap: word-wrap;
                 horizontal-stretch: 1;
                 text <=> root.text;
                 single-line: true;

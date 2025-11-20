@@ -1,0 +1,67 @@
+import {PlantNameValue} from "dash.slint";
+import { KnobLineEdit, SpinBox, KnobButton } from "components.slint";
+
+export component edit inherits VerticalLayout {
+    alignment: stretch;
+    vertical-stretch: 1.0;
+    spacing: 1px;
+    in-out property <string> name: PlantNameValue.plantname.name;
+    in-out property <int> day: PlantNameValue.plantname.day;
+    HorizontalLayout {
+        Text {
+            height: 10px;
+            wrap: TextWrap.word-wrap;
+            text: "식물 이름 수정";
+        }
+        KnobLineEdit {
+            height: 10px;
+            text <=> name;
+            input-type: InputType.text;
+        }
+    }
+    HorizontalLayout {
+        Text {
+            height: 10px;
+            wrap: TextWrap.word-wrap;
+            text: "식물 키운 날짜 수정";
+        }
+        SpinBox {
+            height: 10px;
+            min: 0;
+            max: 300;
+            value <=> day;
+        }
+    }
+    HorizontalLayout {
+        spacing: 4px;
+        alignment: center;
+        Rectangle {
+            height: 10px;
+            border-color: black;
+            border-width: 1px;
+            Text {
+                text: "reset";
+                KnobButton {
+                    accessible-action-default => {
+                        day = PlantNameValue.plantname.day;
+                        name = PlantNameValue.plantname.name;
+                    }
+                }
+            }
+        }
+        Rectangle {
+            height: 10px;
+            border-color: black;
+            border-width: 1px;
+            Text {
+                text: "save";
+                KnobButton {
+                    accessible-action-default => {
+                        PlantNameValue.plantname.day = day;
+                        PlantNameValue.plantname.name = name;
+                    }
+                }
+            }
+        }
+    }
+}
