@@ -1,4 +1,4 @@
-import { Blinker, Counter, KnobButton, KnobImageButton, KnobLineEdit, PlantValue } from "components.slint";
+import { Blinker, Counter, KnobButton, KnobImageButton, KnobLineEdit} from "components.slint";
 import { LineEdit } from "std-widgets.slint";
 
 export component IconBox {
@@ -13,8 +13,8 @@ export component IconBox {
         HorizontalLayout {
             width: 100%;
             height: 100%;
-            spacing: (light)?15px:3px;
-            alignment: center;
+            spacing: 3px;
+            alignment: space-between;
 
             Image {
                 width: 12px;
@@ -36,15 +36,55 @@ export component IconBox {
     }
 }
 
+export struct Plant {
+    Fan: int,
+    Light: int,
+    Water: int,
+    Hum: int,
+    HumTarget: int,
+    Temp: int,
+    TempTarget: int,
+    Cool: int,
+    OutTemp: int,
+    OutHum: int,
+}
+
+export struct PlantName {
+    name: string,
+    day: int,
+}
+
+export global PlantValue { 
+    in-out property <Plant> plant: {
+        Fan: 50,
+        Light: 70,
+        Water: 40,
+        Hum: 60,
+        HumTarget: 65,
+        Temp: 24,
+        TempTarget: 22,
+        Cool: 30,
+        OutTemp: 28,
+        OutHum: 55,
+    };
+
+    callback censor;
+}
+
+export global PlantNameValue {
+    in-out property <PlantName> plantname: {name:"flower", day:55};
+    callback name;
+}
+
 export component FanBox inherits IconBox {
-    in property <int> num: PlantValue.FanNum;
+    in property <int> num: PlantValue.plant.Fan;
     icon: (Math.mod(Counter.count, (120-num)/10)==0) ? @image-url("assets/fan_a.png") : @image-url("assets/fan_b.png");
     text: num + "%";
 }
 
 export component LightBox inherits IconBox {
     icon: @image-url("assets/light.png");
-    in property <int> num: PlantValue.LightNum;
+    in property <int> num: PlantValue.plant.Light;
     text: num + "%";
     is_long: true;
     light: true;
@@ -52,12 +92,12 @@ export component LightBox inherits IconBox {
 
 export component WaterBox inherits IconBox {
     icon: @image-url("assets/humidity.png");
-    in property <int> num: PlantValue.WaterNum;
+    in property <int> num: PlantValue.plant.Water;
     text: num + "%";
 }
 export component HumBox inherits IconBox {
-    in property <int> num: PlantValue.HumNum;
-    in property <int> target: PlantValue.HumTarget;
+    in property <int> num: PlantValue.plant.Hum;
+    in property <int> target: PlantValue.plant.HumTarget;
     icon: Math.mod(Counter.count, (120-Math.abs(num - target)/10))==0?@image-url("assets/humidity_b.png"): @image-url("assets/humidity.png");
     is_long: true;
     text: num + "/"+ target + "%";
@@ -65,26 +105,26 @@ export component HumBox inherits IconBox {
 
 export component TempBox inherits IconBox {
     icon: @image-url("assets/thermometer.png");
-    in property <int> num: PlantValue.TempNum;
-    in property <int> target: PlantValue.TempTarget;
+    in property <int> num: PlantValue.plant.Temp;
+    in property <int> target: PlantValue.plant.TempTarget;
     is_long: true;
     text: num + "/"+ target+ "°C";
 }
 
 export component CoolBox inherits IconBox {
     icon: @image-url("assets/snow.png");
-    in property <int> num: PlantValue.CoolNum;
+    in property <int> num: PlantValue.plant.Cool;
     text: num + "%";
 }
 
 export component OutTemp inherits IconBox {
     icon: @image-url("assets/thermometer.png");
-    in property <int> num: PlantValue.OutTempNum;
+    in property <int> num: PlantValue.plant.OutTemp;
     text: num + "°C";
 }
 export component OutHum inherits IconBox {
     icon: @image-url("assets/humidity.png");
-    in property <int> num: PlantValue.OutHumNum;
+    in property <int> num: PlantValue.plant.OutHum;
     text: num + "%";
 }
 export component DashBox inherits Rectangle {
@@ -120,11 +160,11 @@ export component DashBoard inherits VerticalLayout {
     HorizontalLayout {
         Text {
             wrap: TextWrap.word-wrap;
-            text: "<식물이름>";
+            text: PlantNameValue.plantname.name;
         }
         Text {
-            horizontal-alignment: left;
-            text: "-DAY " + day;
+            horizontal-alignment: right;
+            text: "-DAY " + PlantNameValue.plantname.day;
         }
     }
         HorizontalLayout {
